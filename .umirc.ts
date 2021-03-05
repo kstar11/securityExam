@@ -1,8 +1,16 @@
 import { defineConfig } from 'umi';
 
 export default defineConfig({
+  history: {
+    type: 'browser',
+  },
+  hash: true,
+  antd: {},
+  dva: {
+    hmr: true,
+  },
   title: '高大上-安全考试后台管理系统',
-  favicon: 'assets/favicon.ico',
+  favicon: '/assets/favicon.ico',
   metas: [
     {
       name: 'keywords',
@@ -21,23 +29,32 @@ export default defineConfig({
   routes: [
     {
       path: '/',
+      redirect: '/login',
+    },
+    {
+      path: '/index',
       component: '@/layouts/BaseLayout/index',
       routes: [
         {
-          path: '/userlist',
-          component: 'UserList',
+          path: '/index/userlist',
           exact: true,
+          component: 'UserList',
           title: '高大上-用户数据列表',
         },
         {
-          path: '/loglist',
-          component: 'LogList',
+          path: '/index/loglist',
           exact: true,
+          component: 'LogList',
           title: '高大上-操作日志列表',
         },
       ],
     },
-    { path: '/user', component: '@/layouts/UserLayout/index' },
+    {
+      path: '/login',
+      exact: true,
+      component: '@/layouts/UserLayout/index',
+      title: '高大上-用户登录',
+    },
   ],
   fastRefresh: {},
 });

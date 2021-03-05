@@ -1,5 +1,38 @@
 .base {
   height: 100%;
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 16px;
+    .userIcon {
+      display: flex;
+      align-items: center;
+      .avatar {
+        cursor: pointer;
+        background: #2770e8;
+        color: #fff;
+      }
+    }
+    .logo {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      img {
+        width: 45px;
+      }
+      .title {
+        font-size: 24px;
+        color: #fff;
+        margin-bottom: 0;
+        padding-left: 24px;
+        font-family: '微软雅黑';
+      }
+    }
+  }
+  .content {
+    height: 100%;
+  }
   .footer {
     color: rgba(0, 0, 0, 0.45);
     display: flex;

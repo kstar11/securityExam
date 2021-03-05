@@ -1,15 +1,25 @@
-# umi project
+## <center>长沙市规划信息中心一季度安全考试<center>
 
-## Getting Started
-
-Install dependencies,
-
-```bash
-$ yarn
+#### 安装依赖
+``` bash
+#使用yarn
+yarn
+#使用npm
+npm i
 ```
 
-Start the dev server,
-
+#### 开启调试
 ```bash
-$ yarn start
+#使用yarn
+yarn start
+#使用npm
+npm start
+```
+
+#### 打包发布
+```bash
+#使用yarn
+yarn build
+#使用npm
+npm run build
 ```
