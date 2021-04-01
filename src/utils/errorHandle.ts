@@ -18,15 +18,14 @@ const codeMessage: {
  * 异常处理程序
  */
 const errorHandler = (error: error) => {
-  if (error.name === 'BizError') {
-    notification.error({
-      message: `请求错误 ${error.data.code}`,
-      description: error.data.msg,
-    });
-    return error.data.code;
-  }
   const { response } = error;
-  console.log(response);
+  if (!response) {
+    notification.error({
+      message: `请求错误`,
+      description: error,
+    });
+    return;
+  }
   const errortext = codeMessage[response.status] || response.statusText;
   const { status, url } = response;
   notification.error({

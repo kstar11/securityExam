@@ -3,15 +3,15 @@ import { notification } from 'antd';
 import { history } from 'umi';
 import Cookies from 'js-cookie';
 import errorHandler from './errorHandle';
-import { OptionModel, ResopnseModel } from '@/utils/interfaces';
+import { OptionModel } from '@/utils/interfaces';
 
 const request = extend({
-  prefix: 'http://10.14.3.206:12336', //相当于baseurl
-  timeout: 10000,
-  // errorHandler,
+  prefix: 'http://10.14.3.77:12336', //相当于baseurl
+  timeout: 30000,
+  errorHandler,
 });
 
-request.interceptors.request.use((url, options: OptionModel) => {
+request.interceptors.request.use((url: string, options: OptionModel) => {
   options.headers = {
     'Content-Type': 'application/json;charset=utf-8',
   };
@@ -27,14 +27,24 @@ request.interceptors.request.use((url, options: OptionModel) => {
   };
 });
 request.interceptors.response.use(async (response, options) => {
-  const data = await response.clone().json();
-  if (data.code === 404) {
-    notification.error({
-      message: `用户验证出错!`,
-      description: data.info,
-    });
-    Cookies.remove('Authorization');
-    history.replace('/login');
+  if (response.url.includes('getUserTemplete')) {
+    const data = await response.clone().blob();
+    if (!data) {
+      notification.error({
+        message: `服务器错误!`,
+        description: `下载错误,请联系管理员`,
+      });
+    }
+  } else {
+    const data = await response.clone().json();
+    if (data.code === 404) {
+      notification.error({
+        message: `用户验证出错!`,
+        description: data.info,
+      });
+      Cookies.remove('Authorization');
+      history.replace('/login');
+    }
   }
   return response;
 });

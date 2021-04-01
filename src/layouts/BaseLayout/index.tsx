@@ -3,7 +3,11 @@ import { Layout, Menu, Spin, Avatar, Dropdown, Card, PageHeader } from 'antd';
 import { Link, history, connect } from 'umi';
 import request from '@/utils/request';
 import Cookies from 'js-cookie';
-import { CopyrightOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  CopyrightOutlined,
+  UserOutlined,
+  UsergroupDeleteOutlined,
+} from '@ant-design/icons';
 import { AppState } from '@/utils/interfaces';
 import styles from './index.less';
 const { Header, Footer, Sider, Content } = Layout;
@@ -14,6 +18,10 @@ function BaseLayout(props: any) {
     app: { userInfo },
   } = props;
   useEffect(() => {
+    if (!Cookies.get('Authorization')) {
+      history.push('/index/userlist');
+      return;
+    }
     request('/api/Login/GetLoginModel').then((res) => {
       dispatch({
         type: 'app/userInfo',
@@ -49,7 +57,7 @@ function BaseLayout(props: any) {
       <Header className={styles.header}>
         <div className={styles.logo}>
           <img src={require('@/assets/xxzx.png')} alt="" />
-          <p className={styles.title}>牛逼克拉斯后台管理系统</p>
+          <p className={styles.title}>中心研发竞赛16组-用户管理系统</p>
         </div>
         <Dropdown overlay={userMenu} placement="bottomCenter" arrow>
           <div className={styles.userIcon}>
@@ -59,7 +67,7 @@ function BaseLayout(props: any) {
               icon={<UserOutlined />}
             />
             <span style={{ color: '#fff', marginLeft: 8 }}>
-              {userInfo.UserName}
+              {userInfo ? userInfo.UserName : ''}
             </span>
           </div>
         </Dropdown>
@@ -72,11 +80,8 @@ function BaseLayout(props: any) {
           onCollapse={() => toggleCollapsed(!collapsed)}
         >
           <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-            <Menu.Item key="1">
+            <Menu.Item key="1" icon={<UsergroupDeleteOutlined />}>
               <Link to="/index/userlist">用户管理</Link>
-            </Menu.Item>
-            <Menu.Item key="2">
-              <Link to="/index/loglist">操作日志</Link>
             </Menu.Item>
           </Menu>
         </Sider>
@@ -94,7 +99,7 @@ function BaseLayout(props: any) {
           <Footer className={styles.footer}>
             <p>
               Copyright <CopyrightOutlined />
-              2021 牛逼科拉斯工作组荣誉出品
+              2021 中心研发竞赛16组荣誉出品
             </p>
           </Footer>
         </Layout>

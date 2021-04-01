@@ -14,6 +14,7 @@ export interface UserModel {
   UserNum: string;
   UserName: string;
   MobilePhone: string;
+  EncryptMobilePhone?: string;
   LastVisit?: Date | string;
   RoleId: number | string;
   RoleName: string;
@@ -26,7 +27,7 @@ export interface UserModel {
 export interface PageModel {
   pageIndex: number;
   pageSize: number;
-  UserName?: string;
+  total: number;
 }
 
 export interface UmiComponentProps {
@@ -41,10 +42,12 @@ export interface AppState {
 export interface OptionModel {
   headers?: any;
 }
-export interface ResopnseModel {
-  code: number;
-  data?: any;
-  info: string;
+
+export interface PasswordModel {
+  userNum?: number | string;
+  pwd: string;
+  newpwd: string;
+  copyNewpwd: string;
 }
 
 export interface error {

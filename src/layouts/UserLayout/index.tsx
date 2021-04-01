@@ -2,7 +2,7 @@ import { Layout, Form, Input, Button, Col, Row, notification } from 'antd';
 import { history } from 'umi';
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
-import crypto from 'crypto';
+import { toMD5 } from '@/utils/desCrypto';
 import request from '@/utils/request';
 import {
   CopyrightOutlined,
@@ -15,7 +15,7 @@ const { Footer } = Layout;
 const LoginForm = () => {
   const [verifyToken, setToken] = useState<any>(btoa(Math.random().toString()));
   const [captcha, setCode] = useState(
-    `http://10.14.3.206:12336/api/sys/verifyCode?verifyToken=${verifyToken}`,
+    `http://10.14.3.77:12336/api/sys/verifyCode?verifyToken=${verifyToken}`,
   );
   useEffect(() => {
     if (Cookies.get('Authorization')) {
@@ -27,10 +27,9 @@ const LoginForm = () => {
     toggleLoading(true);
     const params = {
       ...values,
-      userPwd: crypto.createHash('md5').update(values.userPwd).digest('hex'),
+      userPwd: toMD5(values.userPwd),
       verifyToken,
     };
-    console.log(params);
     request('/api/sys/login', {
       method: 'POST',
       params: params,
@@ -49,6 +48,11 @@ const LoginForm = () => {
           message: '登录成功!',
           description: '欢迎回来!',
         });
+      } else {
+        notification.error({
+          message: '登录失败!',
+          description: res.info,
+        });
       }
     });
   };
@@ -56,7 +60,7 @@ const LoginForm = () => {
     setToken((pre: string) => {
       const newCaptch = btoa(Math.random().toString());
       setCode(
-        `http://10.14.3.206:12336/api/sys/verifyCode?verifyToken=${newCaptch}`,
+        `http://10.14.3.77:12336/api/sys/verifyCode?verifyToken=${newCaptch}`,
       );
       return newCaptch;
     });
@@ -80,7 +84,24 @@ const LoginForm = () => {
       </Form.Item>
       <Form.Item
         name="userPwd"
-        rules={[{ required: true, message: '请输入用户密码!' }]}
+        rules={[
+          {
+            required: true,
+            message: '请输入用户密码!',
+            pattern: /(?=.*[A-Za-z].*[A-Za-z])(?=.*[0-9].*[0-9])(?=.*[\W_].*[\W_]).{8,}/,
+            validator: (rule, value) => {
+              if (!value) {
+                rule.message = '请输入新密码!';
+                return Promise.reject();
+              }
+              if (!rule.pattern?.exec(value)) {
+                rule.message = '密码强度不符合!';
+                return Promise.reject();
+              }
+              return Promise.resolve();
+            },
+          },
+        ]}
       >
         <Input.Password
           prefix={<LockOutlined className="site-form-item-icon" />}
@@ -117,11 +138,11 @@ const LoginForm = () => {
       </Form.Item>
       <Form.Item>
         <Button
+          block
           type="primary"
           htmlType="submit"
           className="login-form-button"
           loading={loading}
-          style={{ width: '100%' }}
         >
           登录
         </Button>
@@ -133,7 +154,14 @@ const LoginForm = () => {
 export default function UserLayout(props: any) {
   return (
     <Layout className={styles.userlayout}>
-      <img src={require('@/assets/logo.png')} alt="" className={styles.logo} />
+      <h2 className={styles.title}>
+        <img
+          src={require('@/assets/xxzx.png')}
+          alt=""
+          className={styles.logo}
+        />
+        中心研发竞赛16组-用户管理系统
+      </h2>
       <Layout className={styles.userWrap}>
         <div className={styles.typeTab}>
           <div className={styles.tab}>用户登录</div>
@@ -145,7 +173,7 @@ export default function UserLayout(props: any) {
       <Footer>
         <p>
           Copyright <CopyrightOutlined />
-          2021 牛逼科拉斯工作组荣誉出品
+          2021 中心研发竞赛16组荣誉出品
         </p>
       </Footer>
     </Layout>

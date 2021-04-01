@@ -2,7 +2,11 @@ export default {
   namespace: 'app', // 表示在全局 state 上的 key
   state: {
     loading: true,
-    userInfo: {},
+    userInfo: {
+      UserName: '测试级管理员',
+      RoleId: 0,
+      UserNum: 0,
+    },
   }, // 状态数据
   subscriptions: {}, // 订阅数据源
   effects: {
